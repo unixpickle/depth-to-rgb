@@ -18,7 +18,7 @@ def benchmark_transcoder(transcoder):
 
     Returns:
       A dict mapping benchmarks to dicts mapping
-        compression levels to MSEs.
+        compression levels to mean absolute errors.
     """
     result_dict = {}
     for bench_name, image in load_depth_images():
@@ -30,7 +30,7 @@ def benchmark_transcoder(transcoder):
             Image.fromarray(rgb).save(data, format='JPEG', quality=quality)
             decoded = transcoder.to_depth(np.array(Image.open(data), 'uint8'))
             assert decoded.dtype == 'uint16'
-            error = np.mean(np.square((decoded.astype('float') - image.astype('float')) / 0xffff))
+            error = np.mean(np.abs(decoded.astype('float') - image.astype('float')))
             bench_dict[quality] = error
         result_dict[bench_name] = bench_dict
     return result_dict
@@ -44,7 +44,7 @@ def print_benchmark_results(results):
     for bench_name, bench_dict in sorted(results.items()):
         print('Results for ' + bench_name)
         for quality, error in sorted(bench_dict.items()):
-            print('  %d - %.4e' % (quality, error))
+            print('  %d - %f' % (quality, error))
 
 
 def load_depth_images():
