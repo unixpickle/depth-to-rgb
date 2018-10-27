@@ -6,6 +6,7 @@ import depth_to_rgb
 
 TRANSCODERS = {
     'grayscale': depth_to_rgb.GrayscaleTranscoder(),
+    'wrapbit': depth_to_rgb.WrapBitTranscoder(),
 }
 
 
