@@ -54,9 +54,9 @@ def load_depth_images():
     Returns:
       An iterator over (name, image_array) tuples.
     """
-    asset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets')
-    if not os.path.exists(asset_dir):
-        raise FileNotFoundError('missing asset directory at: ' + asset_dir)
-    for name in os.listdir(asset_dir):
+    image_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_images')
+    if not os.path.exists(image_dir):
+        raise FileNotFoundError('missing image directory at: ' + image_dir)
+    for name in os.listdir(image_dir):
         if name.endswith('.png'):
-            yield (name, np.array(Image.open(os.path.join(asset_dir, name)), 'uint16'))
+            yield (name, np.array(Image.open(os.path.join(image_dir, name)), 'uint16'))
