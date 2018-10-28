@@ -1,5 +1,5 @@
 """
-A collection of obviously naive algorithms.
+A collection of halftone transcoders.
 """
 
 import numpy as np
@@ -19,7 +19,7 @@ class HalfToneCheatingTranscoder(Transcoder):
     def _halftone(self, image, min_val, max_val):
         image = np.copy(image).astype('float64')
         image -= min_val
-        image *=  (255 / (max_val - min_val))
+        image *= (255 / (max_val - min_val))
         return np.floor(image).astype('uint8')
 
     def to_rgb(self, depth_image):
