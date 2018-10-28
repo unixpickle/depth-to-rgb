@@ -5,8 +5,7 @@ images.
 
 from .base import Transcoder
 from .benchmark import benchmark_transcoder, print_benchmark_results
-from .naive import GrayscaleTranscoder, WrapBitTranscoder, HalfToneCheatTranscoder, HalfToneTranscoder
+from .naive import GrayscaleTranscoder, WrapBitTranscoder, HalfToneCheatingTranscoder
 
 __all__ = ['GrayscaleTranscoder', 'Transcoder', 'WrapBitTranscoder',
-           'HalfToneCheatTranscoder', 'HalfToneTranscoder', 'benchmark_transcoder',
-           'print_benchmark_results']
+           'HalfToneCheatingTranscoder', 'benchmark_transcoder', 'print_benchmark_results']
