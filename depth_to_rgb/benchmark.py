@@ -24,12 +24,7 @@ def benchmark_transcoder(transcoder):
     for bench_name, image in load_depth_images():
         bench_dict = {}
         for quality in range(10, 101, 10):
-            data = io.BytesIO()
-            rgb = transcoder.to_rgb(image)
-            assert rgb.dtype == 'uint8'
-            Image.fromarray(rgb).save(data, format='JPEG', quality=quality)
-            decoded = transcoder.to_depth(np.array(Image.open(data), 'uint8'))
-            assert decoded.dtype == 'uint16'
+            decoded = compression_reconstruction(transcoder, image, quality)
             error = np.mean(np.abs(decoded.astype('float') - image.astype('float')))
             bench_dict[quality] = error
         result_dict[bench_name] = bench_dict
@@ -62,13 +57,7 @@ def transcode_at_quality(transcoder, quality):
     for bench_name, image in load_depth_images():
         bench_dict = {}
         bench_dict['original'] = image
-        data = io.BytesIO()
-        rgb = transcoder.to_rgb(image)
-        assert rgb.dtype == 'uint8'
-        Image.fromarray(rgb).save(data, format='JPEG', quality=quality)
-        decoded = transcoder.to_depth(np.array(Image.open(data), 'uint8'))
-        assert decoded.dtype == 'uint16'
-        bench_dict['decoded'] = decoded
+        bench_dict['decoded'] = compression_reconstruction(transcoder, image, quality)
         result_dict[bench_name] = bench_dict
     return result_dict
 
@@ -86,3 +75,17 @@ def load_depth_images():
     for name in os.listdir(image_dir):
         if name.endswith('.png'):
             yield (name, np.array(Image.open(os.path.join(image_dir, name)), 'uint16'))
+
+
+def compression_reconstruction(transcoder, image, quality):
+    """
+    Get a reconstruction after encoding, compressing, and
+    decoding an image.
+    """
+    data = io.BytesIO()
+    rgb = transcoder.to_rgb(image)
+    assert rgb.dtype == 'uint8'
+    Image.fromarray(rgb).save(data, format='JPEG', quality=quality)
+    decoded = transcoder.to_depth(np.array(Image.open(data), 'uint8'))
+    assert decoded.dtype == 'uint16'
+    return decoded
